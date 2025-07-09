@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_PATH=/usr/src/app/database/pedidos.db
+      - GOOGLE_SHEETS_ID=${GOOGLE_SHEETS_ID}
+      - IA_BASE_URL=http://ia:5000
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./database:/usr/src/app/database
+      - ./config:/usr/src/app/config:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+    restart: always
+    environment:
+      - API_URL=${API_URL:-http://localhost:3000}
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # Uncomment and configure these services as needed
+  # waha:
+  #   image: devlikeapro/waha:latest
+  #   restart: always
+  #   volumes:
+  #     - waha-sessions:/usr/src/app/.wwebjs_auth
+  #   environment:
+  #     - WHATSAPP_SESSION_ID=trofy-whatsapp
+  #     - STORAGE_TYPE=json
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '1'
+  #         memory: 1G
+
+  # ia:
+  #   build:
+  #     context: ./ia-service
+  #     dockerfile: Dockerfile
+  #   restart: always
+  #   environment:
+  #     - NODE_ENV=production
+  #     - PORT=5000
+  #     - WHATSAPP_API_URL=http://waha:3001
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '1'
+  #         memory: 1G
+
+volumes:
+  waha-sessions:
+    name: trofy-waha-sessions
+
+networks:
+  default:
+    name: trofy-network
+    driver: bridge

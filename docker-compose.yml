@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  # API Service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trofy-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_PATH=/usr/src/app/database/pedidos.db
+      - GOOGLE_SHEETS_ID=${GOOGLE_SHEETS_ID:-}
+      - IA_BASE_URL=http://ia:5000
+    depends_on:
+      - db
+      - ia
+    networks:
+      - trofy-network
+
+  # Database Service (SQLite)
+  db:
+    image: nouchka/sqlite3:latest
+    container_name: trofy-db
+    volumes:
+      - ./database:/data
+    networks:
+      - trofy-network
+    healthcheck:
+      test: ["CMD", "ls", "/data/pedidos.db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # WAHA (WhatsApp Web API) Service
+  waha:
+    image: devlikeapro/waha:latest
+    container_name: trofy-waha
+    restart: unless-stopped
+    ports:
+      - "3001:3000"  # Web interface
+      - "3002:3001"  # API
+    volumes:
+      - waha-sessions:/usr/src/app/.wwebjs_auth
+    environment:
+      - WHATSAPP_SESSION_ID=trofy-whatsapp
+      - LOG_LEVEL=error
+      - STORAGE_TYPE=json
+    networks:
+      - trofy-network
+
+  # AI Service (example - replace with your actual AI service)
+  ia:
+    build:
+      context: ./ia-service
+      dockerfile: Dockerfile
+    container_name: trofy-ia
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - WHATSAPP_API_URL=http://waha:3001
+    depends_on:
+      - waha
+    networks:
+      - trofy-network
+
+  # Admin UI (optional, if you want to serve it separately)
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+    container_name: trofy-admin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - API_URL=http://api:3000
+    depends_on:
+      - api
+    networks:
+      - trofy-network
+
+# Named volumes for persistent data
+volumes:
+  waha-sessions:
+    name: trofy-waha-sessions
+
+# Custom network for all services
+networks:
+  trofy-network:
+    driver: bridge

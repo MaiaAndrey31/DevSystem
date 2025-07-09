@@ -1,0 +1,59 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE and editor files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+database/*.db
+!database/pedidos.db
+database/*.db-*
+
+# Build output
+/dist
+/build
+
+# Logs
+logs
+*.log
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Config files (sensitive data)
+/config/*
+!config/*.example
+
+# Test files
+/test
+/coverage
+
+# Cache directories
+.cache/
+.temp/
+.tmp/

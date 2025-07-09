@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - Troféu</title>
+    <link rel="icon" type="image/jpg" href="./assets/logo.jpg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><img src="./assets/logo.jpg" alt="logo"> Painel de Controle Troféu</h1>
+            <div class="status-indicator" id="api-status">
+                <span class="status-dot"></span>
+                <span>Conectando...</span>
+            </div>
+        </header>
+
+        <div class="content">
+            <aside class="sidebar">
+                <div class="filter-section">
+                    <h3>Filtros</h3>
+                    <div class="filter-group">
+                        <label for="status-filter">Status:</label>
+                        <select id="status-filter" class="filter-select">
+                            <option value="">Todos</option>
+                            <option value="Novo pedido">Novo pedido</option>
+                            <option value="Em processamento">Em processamento</option>
+                            <option value="Enviado">Enviado</option>
+                            <option value="Entregue">Entregue</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="search">Buscar:</label>
+                        <input type="text" id="search" placeholder="Nome, email ou telefone" class="filter-input">
+                    </div>
+                    <button id="apply-filters" class="btn btn-primary">
+                        <i class="fas fa-filter"></i> Aplicar Filtros
+                    </button>
+                    <button id="reset-filters" class="btn btn-secondary">
+                        <i class="fas fa-undo"></i> Limpar Filtros
+                    </button>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div class="actions-bar">
+                    <div class="actions-left">
+                        <button id="refresh-btn" class="btn btn-icon" title="Atualizar">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="actions-right">
+                        <div class="pagination-info" id="pagination-info">
+                            Mostrando <span id="showing-count">0</span> de <span id="total-count">0</span> pedidos
+                        </div>
+                        <div class="pagination-controls">
+                            <button id="prev-page" class="btn btn-icon" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="page-info">Página 1</span>
+                            <button id="next-page" class="btn btn-icon" disabled>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="pedidos-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Telefone</th>
+                                <th>Tipo de Troféu</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pedidos-body">
+                            <tr>
+                                <td colspan="7" class="loading">Carregando pedidos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes do Pedido -->
+    <div id="pedido-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalhes do Pedido <span id="pedido-id"></span></h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="pedido-info">
+                    <div class="info-group">
+                        <h3>Informações do Cliente</h3>
+                        <p><strong>Nome:</strong> <span id="cliente-nome"></span></p>
+                        <p><strong>Email:</strong> <span id="cliente-email"></span></p>
+                        <p><strong>Telefone:</strong> <span id="cliente-telefone"></span></p>
+                        <p><strong>CPF:</strong> <span id="cliente-cpf"></span></p>
+                        <p><strong>Tipo de Troféu:</strong> <span id="tipo-trofeu"></span></p>
+                    </div>
+                    
+                    <div class="info-group">
+                        <h3>Endereço de Entrega</h3>
+                        <p id="endereco-completo"></p>
+                        <p><strong>CEP:</strong> <span id="cliente-cep"></span></p>
+                    </div>
+                    
+                    <div class="info-group">
+                        <h3>Status do Pedido</h3>
+                        <div class="status-update">
+                            <select id="novo-status" class="status-select">
+                                <option value="Novo pedido">Novo pedido</option>
+                                <option value="Em processamento">Em processamento</option>
+                                <option value="Enviado">Enviado</option>
+                                <option value="Entregue">Entregue</option>
+                                <option value="Cancelado">Cancelado</option>
+                            </select>
+                            <button id="atualizar-status" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Atualizar
+                            </button>
+                        </div>
+                        <div class="codigo-rastreio">
+                            <label for="codigo-rastreio">Código de Rastreio:</label>
+                            <input type="text" id="codigo-rastreio" placeholder="Código de rastreio">
+                        </div>
+                    </div>
+                    
+                    <div class="info-group">
+                        <h3>Bônus Escolhido</h3>
+                        <p id="bonus-escolhido"></p>
+                    </div>
+                    
+                    <div class="info-group">
+                        <h3>Histórico de Atualizações</h3>
+                        <ul id="historico-atualizacoes">
+                            <li>Carregando histórico...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="fechar-modal" class="btn btn-secondary">Fechar</button>
+                <button id="enviar-notificacao" class="btn btn-primary">
+                    <i class="fas fa-bell"></i> Enviar Notificação
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template para itens de pedido -->
+    <template id="pedido-template">
+        <tr>
+            <td class="pedido-id"></td>
+            <td class="pedido-nome"></td>
+            <td class="pedido-telefone"></td>
+            <td class="pedido-tipo-trofeu"></td>
+            <td><span class="status-badge"></span></td>
+            <td class="pedido-data"></td>
+            <td class="pedido-acoes">
+                <button class="btn btn-icon btn-view" title="Visualizar">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-icon btn-edit" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+        </tr>
+    </template>
+
+    <script>
+        // Verifica se o config.js foi carregado corretamente
+        console.log('Iniciando carregamento do config.js...');
+    </script>
+    <script src="config.js"></script>
+    <script>
+        // Verifica se o config.js foi carregado corretamente
+        console.log('Configurações carregadas:', window.API_CONFIG);
+        if (!window.API_CONFIG) {
+            console.error('ERRO: Configurações da API não foram carregadas corretamente!');
+            // Força a definição de configurações padrão se o config.js não carregar
+            window.API_CONFIG = {
+                BASE_URL: 'http://localhost:3000',
+                CORS: {
+                    credentials: 'same-origin',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                }
+            };
+            console.warn('Usando configurações padrão:', window.API_CONFIG);
+        }
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
