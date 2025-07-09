@@ -1,0 +1,257 @@
+# ===================================
+# Dependencies
+# ===================================
+node_modules/
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+venv/
+env/
+ENV/
+.env.venv
+.env
+
+# ===================================
+# Environment Variables and Secrets
+# ===================================
+.env
+!.env.example
+.env.*.local
+!.env.example.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Google Service Account
+/config/service-account.json
+/config/*.json
+!config/*.example.json
+
+# JWT and API Keys
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# ===================================
+# Build Output and Logs
+# ===================================
+/build
+/dist
+/coverage
+/.nyc_output
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# ===================================
+# Editor Directories and Files
+# ===================================
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ===================================
+# Database
+# ===================================
+/database/*.db
+/database/*.db-*
+!/database/.gitkeep
+
+# SQLite journal files
+*.sqlite3-*
+*.sqlite3-journal
+
+# ===================================
+# Testing
+# ===================================
+/coverage
+.nyc_output
+
+# ===================================
+# Docker
+# ===================================
+.docker/
+**/.docker/**
+**/docker-compose.override.yml
+
+# ===================================
+# WAHA (WhatsApp Web API)
+# ===================================
+.wwebjs_auth/
+.wwebjs_cache/
+
+# ===================================
+# Project Specific
+# ===================================
+# Cache directories
+.cache/
+.temp/
+.tmp/
+
+# Local development
+.vercel
+.next
+
+# ===================================
+# IDE Specific
+# ===================================
+# Visual Studio Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# WebStorm
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# ===================================
+# Temporary files
+# ===================================
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# ===================================
+# Dependency directories
+# ===================================
+bower_components/
+.jest/
+.nyc_output/
+
+# ===================================
+# Optional npm cache directory
+# ===================================
+.npm
+
+# ===================================
+# Optional eslint cache
+# ===================================
+.eslintcache
+
+# ===================================
+# Optional REPL history
+# ===================================
+.node_repl_history
+
+# ===================================
+# Output of 'npm pack'
+# ===================================
+*.tgz
+
+# ===================================
+# Yarn Integrity file
+# ===================================
+.yarn-integrity
+
+# ===================================
+# Local Netlify folder
+# ===================================
+.netlify
+
+# ===================================
+# Debug logs from npm
+# ===================================
+debug.log*
+
+# ===================================
+# Local development environment
+# ===================================
+.local-*
+
+# ===================================
+# Mac OS files
+# ===================================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ===================================
+# Windows files
+# ===================================
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# ===================================
+# Linux files
+# ===================================
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===================================
+# Project specific ignores
+# ===================================
+# Ignore local development environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore local overrides for docker-compose
+docker-compose.override.yml
+
+# Ignore local development database
+database/dev.db
+
+# Ignore any local development certificates
+*.pem
+*.key
+*.crt
+
+# Ignore any local development configuration overrides
+config/local.*.json
+
+# Keep empty directories
+!.gitkeep
