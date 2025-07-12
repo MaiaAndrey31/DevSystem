@@ -73,6 +73,8 @@ app.get('/pedidos', async (_, res) => {
     console.error('Erro ao buscar pedidos:', error);
     res.status(500).json({ success: false, error: 'Erro ao buscar pedidos' });
   }
+
+  
 });
 
 const PORT = process.env.PORT || 3000;
