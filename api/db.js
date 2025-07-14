@@ -1,9 +1,25 @@
 const Database = require('better-sqlite3');
 const path = require('path');
+const fs = require('fs');
 
 // Caminho para o banco de dados SQLite
-const dbPath = path.join(__dirname, '..', 'database', 'pedidos.db');
-const db = new Database(dbPath);
+const dbDir = path.join(__dirname, '..', 'database');
+const dbPath = path.join(dbDir, 'pedidos.db');
+
+// Garantir que o diretório do banco de dados existe
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
+
+// Inicializar o banco de dados
+let db;
+try {
+  db = new Database(dbPath);
+  console.log(`Conectado ao banco de dados em: ${dbPath}`);
+} catch (error) {
+  console.error('Erro ao conectar ao banco de dados:', error);
+  process.exit(1);
+}
 
 // Criar tabela de pedidos se não existir
 db.exec(`

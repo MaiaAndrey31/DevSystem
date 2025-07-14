@@ -4,6 +4,7 @@ const cors = require('cors');
 const db = require('./db');
 const sheets = require('./sheets');
 const ia = require('./ia');
+const linksRouter = require('./routes/links');
 
 const app = express();
 app.use(cors());
@@ -73,16 +74,48 @@ app.get('/pedidos', async (_, res) => {
     console.error('Erro ao buscar pedidos:', error);
     res.status(500).json({ success: false, error: 'Erro ao buscar pedidos' });
   }
-
-  
 });
+
+// Inicializar tabela de links
+async function initializeDatabase() {
+  try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS links (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        url TEXT NOT NULL,
+        description TEXT,
+        icon VARCHAR(50) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('Tabela de links inicializada com sucesso');
+  } catch (error) {
+    console.error('Erro ao inicializar tabela de links:', error);
+  }
+}
+
+// Rotas da API
+app.use('/api/links', linksRouter);
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
-app.listen(PORT, HOST, () => {
-  console.log(`API rodando em http://${HOST}:${PORT}`);
-  console.log('Endpoints disponíveis:');
-  console.log(`- POST   http://${HOST}:${PORT}/pedidos`);
-  console.log(`- PUT    http://${HOST}:${PORT}/pedidos/:id`);
-  console.log(`- GET    http://${HOST}:${PORT}/pedidos`);
+
+// Inicializar o banco de dados e depois iniciar o servidor
+initializeDatabase().then(() => {
+  app.listen(PORT, HOST, () => {
+    console.log(`API rodando em http://${HOST}:${PORT}`);
+    console.log('\nEndpoints de Pedidos:');
+    console.log(`- POST   http://${HOST}:${PORT}/pedidos`);
+    console.log(`- PUT    http://${HOST}:${PORT}/pedidos/:id`);
+    console.log(`- GET    http://${HOST}:${PORT}/pedidos`);
+    
+    console.log('\nEndpoints de Links:');
+    console.log(`- GET    http://${HOST}:${PORT}/api/links`);
+    console.log(`- GET    http://${HOST}:${PORT}/api/links/:id`);
+    console.log(`- POST   http://${HOST}:${PORT}/api/links`);
+    console.log(`- PUT    http://${HOST}:${PORT}/api/links/:id`);
+    console.log(`- DELETE http://${HOST}:${PORT}/api/links/:id`);
+  });
 });

@@ -31,13 +31,17 @@ services:
     container_name: trofy-db
     volumes:
       - ./database:/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - SQLITE_DATABASE=pedidos.db
     networks:
       - trofy-network
     healthcheck:
       test: ["CMD", "ls", "/data/pedidos.db"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
   # WAHA (WhatsApp Web API) Service
   waha:
